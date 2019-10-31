@@ -1,12 +1,12 @@
 body {
     margin: 0 auto;
     font-family: sans-serif;
-    max-width: calc(375px - 20px);
+    max-width: 375px;
 
-    @media screen and (max-width: 800px) {
-        margin: 0 10px;
-        max-width: auto;
-    }
+    // @media screen and (max-width: 800px) {
+    //     margin: 0 10px;
+    //     max-width: auto;
+    // }
 }
 
 header {
@@ -141,6 +141,10 @@ header {
             }
         }
     }
+
+    &.selected {
+        border: 2px solid limegreen;
+    }
 }
 
 .no-compounds {
@@ -223,4 +227,36 @@ label {
     //         display: none;
     //     }
     // }
+}
+
+.app-container {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.compare-menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background-color: lightgray;
+    width: calc(100% - 40px);
+    height: calc(100vh - 40px);
+    padding: 20px;
+
+    .compare-small {
+        // padding: 5px;
+        background-color: white;
+    }
+
+    .micro-card {
+        display: inline-block;
+        padding: 4px;
+        border: 1px solid limegreen;
+        border-radius: 5px;
+        margin-right: 5px;
+    }
 }

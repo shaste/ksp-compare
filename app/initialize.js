@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
             $('.ksp').css('padding-top', '0');
           }
         })
+
+
+        $('.card').on('click', function() {
+          $(this).addClass('selected');
+          console.log('s')
+        })
 	    });
 	}
 
