@@ -25,12 +25,19 @@ header {
             cursor: pointer;
             font-family: serif;
             font-style: italic;
-            line-height: 1;
+            font-size: 1.2em;
+            line-height: 0.9;
             padding: 6px 12px;
             border: none;
             border-radius: 20px;
             color: #787ca6;
-            background-color: #F2F4F6;
+            background-color: #eaedf0;
+
+            outline: none;
+
+            &:active {
+                background-color: #d5dbe1;
+            }
         }
 
         .menu-opened {
@@ -42,7 +49,7 @@ header {
             padding: 0 10px;
             border-radius: 10px;
             background-color: #F2F4F6;
-
+            box-shadow: 0 0 10px 0 rgba(121,124,166,0.5);
         }
     }
 }
