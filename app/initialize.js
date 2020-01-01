@@ -83,10 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         $('.compare-title').on('click', function(){
           $('.compare-menu').addClass('opened');
+          $('body').css('position', 'fixed')
         })
 
         $('button.hide').on('click', function(){
           $('.compare-menu').removeClass('opened');
+          $('body').css('position', '');
         })
 	    });
 	}
