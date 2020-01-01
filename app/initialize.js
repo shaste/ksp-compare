@@ -4,6 +4,7 @@ import $ from 'jquery';
 document.addEventListener('DOMContentLoaded', () => {
   let currentTag = null;
   let enter = false;
+  let compounds = [];
 
 	function loadCards () {
     const preInputValue = tagify.value;
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	  }) 
 	    .then(response => response.json())
 	    .then(json => {
-	      // Превращаем JSON d вёрстку
+	      // Превращаем JSON в вёрстку
         let html = renderCompounds(json);
         
         if (html.length !== 0) {
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </label>
             </div>
 	          <div class="list">
-	            ${html}
+              ${html}
 	          </div>
           `;
         } else {
@@ -43,7 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
         }
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+        // управлять этой функцией только в определенном месте ✓
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
+
+        // Проверять каждую .card
+        // if ($('.card').attr('data-compound-name') === 'Ag2SO4') {
+        //   console.log('Match');
+        //   console.log($(this));
+        //   $(this).addClass('selected');
+        // };
         
         $('#minus-log').change(function() {
           if (this.checked) {
@@ -59,8 +69,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         $('.card').on('click', function() {
-          $(this).addClass('selected');
-          console.log('s')
+          if (!$(this).hasClass('selected')) {
+            compounds.push($(this).attr('data-compound-name'))
+            $(this).clone().appendTo('.compare-menu .compare-menu-container');
+            $(this).addClass('selected');
+
+            $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
+
+            $('.compare-menu').addClass('shown');
+          }
+        })
+
+        $('.compare-title').on('click', function(){
+          $('.compare-menu').addClass('opened');
+        })
+
+        $('button.hide').on('click', function(){
+          $('.compare-menu').removeClass('opened');
         })
 	    });
 	}
@@ -72,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    .map(
         // TODO: проверять чекбокс, если включен — создавать карточки с видимым .minus-log
 	      compound => `
-	        <div class="card">
+	        <div class="card" data-compound-name="${compound.name}">
 	          <div class="verh">
 	            <div class="wrap">
 	              <h2 class="compound">$\\ce{${compound.name}}$</h2>

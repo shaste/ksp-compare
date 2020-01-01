@@ -35,31 +35,40 @@
 </head>
 <body>
   <div class="app-container">
-  <header>
-    <img src="/images/ksp-logo.svg" alt="">
-    <nav>
-      <button class="menu-icon">i</button>
-      <div class="menu-opened">
-        <p>Инструмент для поиска возможных соединений между ионами. Введите ионы, чтобы увидеть какие соединения они образуют.</p>
-        <p>Соединения можно сравнить по константе произведения растворимости, цвету и диссоциации.</p>
-        <p>Константа произведения растворимости справедлива при растворении в воде, при температуре 25°C, для 1 л раствора.</p>
-        <p>Если вы нашли ошибки или хотите что-то добавить, пишите на <a href="mailto:compoundsfinder@gmail.com?subject=Bug Report">compoundsfinder@gmail.com</a></p>
+    <header>
+      <img src="/images/ksp-logo.svg" alt="">
+      <nav>
+        <button class="menu-icon">i</button>
+        <div class="menu-opened">
+          <p>Инструмент для поиска возможных соединений между ионами. Введите ионы, чтобы увидеть какие соединения они образуют.</p>
+          <p>Соединения можно сравнить по константе произведения растворимости, цвету и диссоциации.</p>
+          <p>Константа произведения растворимости справедлива при растворении в воде, при температуре 25°C, для 1 л раствора.</p>
+          <p>Если вы нашли ошибки или хотите что-то добавить, пишите на <a href="mailto:compoundsfinder@gmail.com?subject=Bug Report">compoundsfinder@gmail.com</a></p>
+        </div>
+      </nav>
+    </header>
+    <form style="position: relative;">
+      <input name="ions" type="text" id="suggestInput" placeholder="Start enter ions" autofocus/>
+      <input type="submit" id="load-button" value="&#11152;"/>
+    </form>
+    <div id="app"></div>
+    <div class="compare-menu">
+      <div class="subtitle">
+        <h3 class="compare-title">Compare</h3>
+        <button class="clear-btn">Clear selection</button>
       </div>
-    </nav>
-  </header>
-  <form style="position: relative;">
-    <input name="ions" type="text" id="suggestInput" placeholder="Start enter ions" autofocus/>
-    <input type="submit" id="load-button" value="&#11152;"/>
-  </form>
-  <div id="app"></div>
-  <div class="compare-menu">
-      Сравнение
-      <div class="compare-small">
-        <!-- <div class="micro-card">
-          fe2SO4
-        </div> -->
+      <div class="compare-small" id="small-compounds"></div>
+      <div class="compare-menu-container">
+        <nav class="subtitle">
+          <button class="hide">hide</button>
+          <h3>Compare</h3>
+          <label for="minus-log">
+            &minus;log
+            <input type="checkbox" class="toggle-switch" id="minus-log">
+          </label>
+        </nav>
       </div>
-  </div>
+    </div>
   </div>
 </body>
 </html>

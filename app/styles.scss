@@ -76,7 +76,12 @@ header {
     }
 }
 
+.list {
+    padding-bottom: 90px;
+}
+
 .card {
+    position: relative;
     background-color: #F2F4F6;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -150,7 +155,16 @@ header {
     }
 
     &.selected {
-        border: 2px solid limegreen;
+        &::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            bottom: -2px;
+            right: -2px;
+            border: 2px solid limegreen;
+            border-radius: 10px;
+        }
     }
 }
 
@@ -212,6 +226,7 @@ label {
   
 
 .tagify {
+    --tag-bg: #eaedf0;
     --tags-border-color: #787ca659;
     border-radius: 8px;
 
@@ -244,26 +259,89 @@ label {
 }
 
 .compare-menu {
-    display: none;
-    position: absolute;
-    top: 0;
+    position: fixed;
+    display: block;
+    top: 100%;
     left: 0;
+    right: 0;
     z-index: 10;
-    background-color: lightgray;
-    width: calc(100% - 40px);
-    height: calc(100vh - 40px);
-    padding: 20px;
+    background-color: white;
+    border-radius: 8px 8px 0 0;
+    // width: calc(100% - 40px);
+    // height: calc(100vh - 40px);
+    padding: 10px;
+    box-shadow: 0 0 20px 0 rgba(121,124,166,0.3);
 
-    .compare-small {
-        // padding: 5px;
-        background-color: white;
+    transition: top 100ms ease;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        width: 50px;
+        height: 4px;
+        background-color: lightgray;
+        border-radius: 4px;
+        transform: translateX(-50%);
     }
 
-    .micro-card {
-        display: inline-block;
-        padding: 4px;
-        border: 1px solid limegreen;
-        border-radius: 5px;
-        margin-right: 5px;
+    .subtitle {
+        margin: 0;
+
+        h3 {
+            margin-bottom: 10px;
+        }
+
+        h3.compare-title {
+            position: relative;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: -10px;
+                right: -200%;
+                bottom: -10px;
+                left: 0;
+                // background-color: orange;
+            }
+        }
+
+        .clear-btn {
+            padding: 0;
+            border: none;
+            color: #D0021B;
+            background: transparent;
+        }
+    }
+
+    .compare-small {
+        display: flex;
+        overflow-x: scroll;
+    
+        .micro-card {
+            display: inline-block;
+            padding: 8px 8px 6px;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            background-color: #F2F4F6;
+        }
+    }
+
+    .compare-menu-container {
+        height: 100vh;
+        overflow-y: scroll;
+
+        nav {
+            margin: 10px 0;
+        }
+    }
+
+    &.shown {
+        top: calc(100% - 75px);
+    }
+
+    &.opened {
+        top: -75px;
     }
 }
