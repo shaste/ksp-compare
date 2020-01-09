@@ -83,7 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         $('.compare-title').on('click', function(){
           $('.compare-menu').addClass('opened');
-          $('body').css('position', 'fixed')
+          setTimeout(function() { // чтобы не дергалась ширина боди
+            $('body').css('position', 'fixed')
+          }, 100)
         })
 
         $('button.hide').on('click', function(){
