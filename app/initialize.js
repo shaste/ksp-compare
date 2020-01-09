@@ -49,12 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // управлять этой функцией только в определенном месте ✓
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
 
-        // Проверять каждую .card
-        // if ($('.card').attr('data-compound-name') === 'Ag2SO4') {
-        //   console.log('Match');
-        //   console.log($(this));
-        //   $(this).addClass('selected');
-        // };
+        // Проверять каждую .card и выделять выбранные
+        $('#app .card').each(function(index, element){
+          let compoundName = element.dataset.compoundName
+          if (compounds.includes(compoundName)) {
+            element.classList.add('selected');
+          }
+        }) 
         
         $('#minus-log, #minus-log-menu').change(function() {
           if (this.checked) {
