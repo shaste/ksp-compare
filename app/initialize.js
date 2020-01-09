@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentTag = null;
   let enter = false;
   let compounds = [];
+  let isChecked = false;
 
 	function loadCards () {
     const preInputValue = tagify.value;
@@ -55,15 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
         //   $(this).addClass('selected');
         // };
         
-        $('#minus-log').change(function() {
+        $('#minus-log, #minus-log-menu').change(function() {
           if (this.checked) {
             $('.scientific').hide();
             $('.minus-log').show();
             $('.ksp').css('padding-top', '3px');
+            $('#minus-log, #minus-log-menu').prop('checked', true);
+            isChecked = true;
           } else {
             $('.scientific').show();
             $('.minus-log').hide();
             $('.ksp').css('padding-top', '0');
+            $('#minus-log, #minus-log-menu').prop('checked', false);
+            isChecked = false;
           }
         })
 
