@@ -73,17 +73,22 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         })
 
-
-        $('.card').on('click', function() {
+        $('#app .card').on('click', function() {
           if (!$(this).hasClass('selected')) {
             compounds.push($(this).attr('data-compound-name'))
             $(this).clone().appendTo('.compare-menu .compare-menu-container');
             $(this).addClass('selected');
+          } else {
+            $(this).removeClass('selected');
+            compounds = compounds.filter(item => item !== $(this).attr('data-compound-name'))
+          }
 
+          if (compounds.length > 0) {
+            $('.compare-menu').addClass('shown');
             $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
-
-            $('.compare-menu').addClass('shown');
+          } else {
+            $('.compare-menu').removeClass('shown');
           }
         })
 
