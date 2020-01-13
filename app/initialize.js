@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 100)
         })
 
-        $('button.hide').on('click', function(){
+        $('button.hide-btn').on('click', function(){
           $('.compare-menu').removeClass('opened');
           $('body').css('position', '');
         })
