@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let enter = false;
   let compounds = [];
   let isChecked = false;
+  let isCompareOpen = false;
 
 	function loadCards () {
     const preInputValue = tagify.value;
@@ -50,12 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
 
         // Проверять каждую .card и выделять выбранные
-        $('#app .card').each(function(index, element){
-          let compoundName = element.dataset.compoundName
-          if (compounds.includes(compoundName)) {
-            element.classList.add('selected');
-          }
-        }) 
+        updateSelectedList() 
         
         $('#minus-log, #minus-log-menu').change(function() {
           if (this.checked) {
@@ -74,17 +70,26 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
         $('#app .card').on('click', function() {
+          const compoundName = $(this).attr('data-compound-name'); 
+          
           if (!$(this).hasClass('selected')) {
-            compounds.push($(this).attr('data-compound-name'))
+            compounds.push(compoundName)
             $(this).clone().appendTo('.compare-menu .compare-menu-container');
             $(this).addClass('selected');
+            $('.compare-menu').addClass('shown');
           } else {
             $(this).removeClass('selected');
-            compounds = compounds.filter(item => item !== $(this).attr('data-compound-name'))
+            compounds = compounds.filter(item => item !== compoundName)
+            
+            $('.compare-menu .card').each(function(index, element){ // remove card with THIS data-compound-name from compare-menu
+              const compareCompoundName = element.dataset.compoundName;
+              if (compareCompoundName === compoundName) {
+                element.remove();
+              }
+            })
           }
 
           if (compounds.length > 0) {
-            $('.compare-menu').addClass('shown');
             $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
           } else {
@@ -104,9 +109,22 @@ document.addEventListener('DOMContentLoaded', () => {
           $('body').css('position', '');
         })
 	    });
-	}
+      
+      $('.compare-menu').on('click', '.card .erase-btn', function() {
+        compounds = compounds.filter(item => item !== $(this).parent().attr('data-compound-name'))
+        $(this).parent().remove();
+    
+        updateSelectedList()
 
-
+        if (compounds.length > 0) {
+          $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
+        } else {
+          $('.compare-menu').removeClass('shown opened');
+          $('body').css('position', '');
+        }
+      })
+	};
 
 	function renderCompounds(data) {
 	  return data
@@ -129,7 +147,15 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="colors">                
                 ${compound.colors.map(color => `<div class="color-sample" style="background-color:${color.code};"></div>`).join("")}
               </div>
-	          </div>
+            </div>
+            <button class="erase-btn">
+              <svg viewBox="0 0 10 10">
+                <g>
+                  <line x1="0" y1="0" x2="10" y2="10"/>
+                  <line x1="10" y1="0" x2="0" y2="10"/>
+                </g>
+              </svg>
+            </button>
 	        </div>
 	      `
 	    )
@@ -363,6 +389,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   });
 
+  function updateSelectedList() {
+    $('#app .card').each(function(index, element){
+      let compoundName = element.dataset.compoundName
+      if (compounds.includes(compoundName)) {
+        element.classList.add('selected');
+      } else {
+        element.classList.remove('selected');
+      }
+    }) 
+  }
+
   $('#load-button').on('click', function() {
     loadCards();
     event.preventDefault();
@@ -399,5 +436,15 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.menu-opened').toggle();
       }
     }
+  })
+
+  $('.clear-btn').on('click', function(){
+    compounds = [];
+    $('.compare-menu .card').remove();
+    
+    updateSelectedList()
+    
+    $('.compare-menu').removeClass('shown');
+    $('body').css('position', '');
   })
 });
