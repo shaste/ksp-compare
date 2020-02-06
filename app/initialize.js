@@ -253,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
       { value: "(NH3)^0", output: "(NH<sub>3</sub>)<sup>0</sup>" },
       { value: "Ni^2+", output: "Ni<sup>2+</sup>" },
       { value: "[Ni(NH3)6]^2+", output: "[Ni(NH<sub>3</sub>)<sub>6</sub>]<sup>2+</sup>" },
-      { value: "Ni^2+", output: "Ni<sup>2+</sup>" },
       { value: "NpO2^2+", output: "NpO<sub>2</sub><sup>2+</sup>" },
       { value: "Pb^2+", output: "Pb<sup>2+</sup>" },
       { value: "Pb^4+", output: "Pb<sup>4+</sup>" },
