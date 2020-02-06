@@ -1,4 +1,4 @@
-import Tagify from '@yaireo/tagify'
+import Tagify from '@yaireo/tagify';
 import $ from 'jquery';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
 
         // Проверять каждую .card и выделять выбранные
-        updateSelectedList() 
+        updateSelectedList(); 
         
         $('#minus-log, #minus-log-menu').change(function() {
           if (this.checked) {
@@ -67,26 +67,26 @@ document.addEventListener('DOMContentLoaded', () => {
             $('#minus-log, #minus-log-menu').prop('checked', false);
             isChecked = false;
           }
-        })
+        });
 
         $('#app .card').on('click', function() {
           const compoundName = $(this).attr('data-compound-name'); 
           
           if (!$(this).hasClass('selected')) {
-            compounds.push(compoundName)
+            compounds.push(compoundName);
             $(this).clone().appendTo('.compare-menu .compare-menu-container');
             $(this).addClass('selected');
             $('.compare-menu').addClass('shown');
           } else {
             $(this).removeClass('selected');
-            compounds = compounds.filter(item => item !== compoundName)
+            compounds = compounds.filter(item => item !== compoundName);
             
             $('.compare-menu .card').each(function(index, element){ // remove card with THIS data-compound-name from compare-menu
               const compareCompoundName = element.dataset.compoundName;
               if (compareCompoundName === compoundName) {
                 element.remove();
               }
-            })
+            });
           }
 
           if (compounds.length > 0) {
@@ -95,19 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             $('.compare-menu').removeClass('shown');
           }
-        })
+        });
 
         $('.compare-title').on('click', function(){
           $('.compare-menu').addClass('opened');
           setTimeout(function() { // чтобы не дергалась ширина боди
             $('body').css('position', 'fixed')
           }, 100)
-        })
+        });
 
         $('button.hide-btn').on('click', function(){
           $('.compare-menu').removeClass('opened');
           $('body').css('position', '');
-        })
+        });
 	    });
       
       $('.compare-menu').on('click', '.card .erase-btn', function() {
@@ -123,8 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
           $('.compare-menu').removeClass('shown opened');
           $('body').css('position', '');
         }
-      })
-	};
+      });
+	}
 
 	function renderCompounds(data) {
 	  return data
@@ -390,13 +390,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateSelectedList() {
     $('#app .card').each(function(index, element){
-      let compoundName = element.dataset.compoundName
+      let compoundName = element.dataset.compoundName;
       if (compounds.includes(compoundName)) {
         element.classList.add('selected');
       } else {
         element.classList.remove('selected');
       }
-    }) 
+    });
   }
 
   $('#load-button').on('click', function() {
@@ -435,15 +435,15 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.menu-opened').toggle();
       }
     }
-  })
+  });
 
   $('.clear-btn').on('click', function(){
     compounds = [];
     $('.compare-menu .card').remove();
     
-    updateSelectedList()
+    updateSelectedList();
     
     $('.compare-menu').removeClass('shown');
     $('body').css('position', '');
-  })
+  });
 });
