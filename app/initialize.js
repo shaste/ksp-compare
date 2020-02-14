@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return element.value;
     });
 
-	  fetch("/api/compounds", {
+	  fetch("http://lunrox.com:4486/compounds", {
 	    method: "POST",
 	    body: JSON.stringify(inputValue),
 	    headers: {
@@ -143,9 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
 	            <p class="comment">${compound.comment}</p>
 	          </div>
 	          <div class="niz">
-	            <p class="dissociation">$\\ce{${compound.dissociation}}$</p>
+	            <p class="dissociation">$\\ce{${compound.dissotiation}}$</p>
               <div class="colors">                
-                ${compound.colors.map(color => `<div class="color-sample" style="background-color:${color.code};"></div>`).join("")}
+                ${compound.colors.map(color => {
+                  function borderColor () {
+                    if (color.code === '#FFFFFF') {
+                      return 'rgba(0, 0, 0, 0.15)';
+                    } 
+                  }
+
+                  return `
+                    <div 
+                      class="color-sample" 
+                      style="background-color:${color.code}; border: 1px solid ${borderColor()};">
+                    </div>
+                  `
+                }).join("")}
               </div>
             </div>
             <button class="erase-btn">
