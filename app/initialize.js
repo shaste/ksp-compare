@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           document.querySelector("#app").innerHTML = `
             <div class="no-compounds">
-              <p>These ions don't form compounds</p>
+              <p>These ions don't form insoluble compounds</p>
             </div>
           `;
         }
