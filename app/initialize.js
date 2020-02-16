@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentTag = null;
   let enter = false;
   let compounds = [];
+  let $logSwitch;
   let isChecked = false;
   let isCompareOpen = false;
 
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return element.value;
     });
 
-	  fetch("http://lunrox.com:4486/compounds", {
+	  fetch("/api/compounds", {
 	    method: "POST",
 	    body: JSON.stringify(inputValue),
 	    headers: {
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	  }) 
 	    .then(response => response.json())
 	    .then(json => {
-	      // Превращаем JSON в вёрстку
+	      // JSON to markup
         let html = renderCompounds(json);
         
         if (html.length !== 0) {
@@ -32,7 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
               <h3>Possible products</h3>
               <label for="minus-log">
                 &minus;log
-                <input type="checkbox" class="toggle-switch" id="minus-log">
+                <input 
+                  type="checkbox" 
+                  class="toggle-switch" 
+                  id="minus-log" 
+                  ${isChecked ? 'checked' : ''}
+                  >
               </label>
             </div>
 	          <div class="list">
@@ -47,44 +53,38 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
-        // типографим карточки соединений
+        // Check -log state
+        $logSwitch = $('#minus-log, #minus-log-menu');
+        toggleSwitch();
+
+        // Prettify chem formulas
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
 
-        // Проверять каждую .card и выделять выбранные в сравнении
+        // Check .card in list and select already selected
         updateSelectedList(); 
         
-        $('#minus-log, #minus-log-menu').change(function() {
-          if (this.checked) {
-            $('.scientific').hide();
-            $('.minus-log').show();
-            $('.ksp').css('padding-top', '3px');
-            $('#minus-log, #minus-log-menu').prop('checked', true);
-            isChecked = true;
-          } else {
-            $('.scientific').show();
-            $('.minus-log').hide();
-            $('.ksp').css('padding-top', '0');
-            $('#minus-log, #minus-log-menu').prop('checked', false);
-            isChecked = false;
-          }
+
+        $logSwitch.change(function(){
+          this.checked ? isChecked = true : isChecked = false;
+          toggleSwitch();
         });
 
         $('#app .card').on('click', function() {
           const compoundName = $(this).attr('data-compound-name'); 
           const compoundId = $(this).attr('data-compound-id'); 
           
-          // клик в списке, выделяю и добавляю в сравнение
+          // add to compare and select card after click in list
           if (!$(this).hasClass('selected')) { 
             compounds.push({'name': compoundName, 'id': compoundId});
             $(this).clone().appendTo('.compare-menu .compare-menu-container');
             $(this).addClass('selected');
             $('.compare-menu').addClass('shown');
           } else {
-            // или развыделяю, если уже выбрано
+            // unselect card
             $(this).removeClass('selected');
             compounds = compounds.filter(item => item.id !== compoundId);
             
-            // remove card with THIS data-compound-name from compare-menu
+            // remove card with THIS data-compound-id from compare-menu
             $('.compare-menu .card').each(function(index, element){ 
               const compareCompoundId = element.dataset.compoundId;
               if (compareCompoundId === compoundId) {
@@ -93,10 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
           }
 
-          // после выделения первой карточки выскакивает меню внизу 
-          // и туда добавляются имена соединений
+          // pop up small compare-menu after selecting first card
+          // and adding compound names there
           if (compounds.length > 0) {
-            $('.compare-small').html(compounds.map(compound => `<div class="micro-card">$\\ce{${compound.name}}$</div>`).join(''));
+            $('.compare-small').html(
+              compounds.map(
+                compound => 
+                  `<div class="micro-card">$\\ce{${compound.name}}$</div>`
+                )
+                .join('')
+            );
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
           } else {
             $('.compare-menu').removeClass('shown');
@@ -116,15 +122,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 	    });
       
-      // удаление карточек из сравнения по клику в крестик
+      // delete card from compare-menu after click on × 
       $('.compare-menu').on('click', '.card .erase-btn', function() {
-        compounds = compounds.filter(item => item.id !== $(this).parent().attr('data-compound-id'));
+        compounds = compounds.filter(
+          item => item.id !== $(this).parent().attr('data-compound-id')
+        );
         $(this).parent().remove();
     
         updateSelectedList();
 
         if (compounds.length > 0) {
-          $('.compare-small').html(compounds.map(compound => `<div class="micro-card">$\\ce{${compound.name}}$</div>`).join(''));
+          $('.compare-small').html(
+            compounds.map(
+              compound => 
+                `<div class="micro-card">$\\ce{${compound.name}}$</div>`
+              )
+              .join('')
+          );
           MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
         } else {
           $('.compare-menu').removeClass('shown opened');
@@ -136,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	function renderCompounds(data) {
 	  return data
 	    .map(
-        // TODO: проверять чекбокс, если включен — создавать карточки с видимым .minus-log
 	      compound => `
 	        <div class="card" data-compound-name="${compound.name}" data-compound-id="${compound._id.$oid}">
 	          <div class="verh">
@@ -417,6 +430,20 @@ document.addEventListener('DOMContentLoaded', () => {
         element.classList.remove('selected');
       }
     });
+  }
+
+  function toggleSwitch() {
+    if (isChecked) {
+      $('.scientific').hide();
+      $('.minus-log').show();
+      $('.ksp').css('padding-top', '3px');
+      $logSwitch.prop('checked', true);
+    } else {
+      $('.scientific').show();
+      $('.minus-log').hide();
+      $('.ksp').css('padding-top', '0');
+      $logSwitch.prop('checked', false);
+    }
   }
 
   $('#load-button').on('click', function() {
