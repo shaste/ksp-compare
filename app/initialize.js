@@ -47,10 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
           `;
         }
 
-        // управлять этой функцией только в определенном месте ✓
+        // типографим карточки соединений
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"app"]);
 
-        // Проверять каждую .card и выделять выбранные
+        // Проверять каждую .card и выделять выбранные в сравнении
         updateSelectedList(); 
         
         $('#minus-log, #minus-log-menu').change(function() {
@@ -71,26 +71,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         $('#app .card').on('click', function() {
           const compoundName = $(this).attr('data-compound-name'); 
+          const compoundId = $(this).attr('data-compound-id'); 
           
-          if (!$(this).hasClass('selected')) {
-            compounds.push(compoundName);
+          // клик в списке, выделяю и добавляю в сравнение
+          if (!$(this).hasClass('selected')) { 
+            compounds.push({'name': compoundName, 'id': compoundId});
             $(this).clone().appendTo('.compare-menu .compare-menu-container');
             $(this).addClass('selected');
             $('.compare-menu').addClass('shown');
           } else {
+            // или развыделяю, если уже выбрано
             $(this).removeClass('selected');
-            compounds = compounds.filter(item => item !== compoundName);
+            compounds = compounds.filter(item => item.id !== compoundId);
             
-            $('.compare-menu .card').each(function(index, element){ // remove card with THIS data-compound-name from compare-menu
-              const compareCompoundName = element.dataset.compoundName;
-              if (compareCompoundName === compoundName) {
+            // remove card with THIS data-compound-name from compare-menu
+            $('.compare-menu .card').each(function(index, element){ 
+              const compareCompoundId = element.dataset.compoundId;
+              if (compareCompoundId === compoundId) {
                 element.remove();
               }
             });
           }
 
+          // после выделения первой карточки выскакивает меню внизу 
+          // и туда добавляются имена соединений
           if (compounds.length > 0) {
-            $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
+            $('.compare-small').html(compounds.map(compound => `<div class="micro-card">$\\ce{${compound.name}}$</div>`).join(''));
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
           } else {
             $('.compare-menu').removeClass('shown');
@@ -110,14 +116,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 	    });
       
+      // удаление карточек из сравнения по клику в крестик
       $('.compare-menu').on('click', '.card .erase-btn', function() {
-        compounds = compounds.filter(item => item !== $(this).parent().attr('data-compound-name'))
+        compounds = compounds.filter(item => item.id !== $(this).parent().attr('data-compound-id'));
         $(this).parent().remove();
     
-        updateSelectedList()
+        updateSelectedList();
 
         if (compounds.length > 0) {
-          $('.compare-small').html(compounds.map(name => `<div class="micro-card">$\\ce{${name}}$</div>`).join(''));
+          $('.compare-small').html(compounds.map(compound => `<div class="micro-card">$\\ce{${compound.name}}$</div>`).join(''));
           MathJax.Hub.Queue(["Typeset",MathJax.Hub,"small-compounds"]);
         } else {
           $('.compare-menu').removeClass('shown opened');
@@ -131,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    .map(
         // TODO: проверять чекбокс, если включен — создавать карточки с видимым .minus-log
 	      compound => `
-	        <div class="card" data-compound-name="${compound.name}">
+	        <div class="card" data-compound-name="${compound.name}" data-compound-id="${compound._id.$oid}">
 	          <div class="verh">
 	            <div class="wrap">
 	              <h2 class="compound">$\\ce{${compound.name}}$</h2>
@@ -403,8 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateSelectedList() {
     $('#app .card').each(function(index, element){
-      let compoundName = element.dataset.compoundName;
-      if (compounds.includes(compoundName)) {
+      let compoundId = element.dataset.compoundId;
+      if (compounds.some(item => item.id === compoundId)) {
         element.classList.add('selected');
       } else {
         element.classList.remove('selected');
